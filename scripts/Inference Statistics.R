@@ -71,8 +71,10 @@ stargazer(model_3, type = "text")
 
 #8.4 Plot models
 #8.4.1 Plot Model 1 (domicil)
+#Ideas for meaningful plots?
 
 #8.4.2 Plot Model 2 (gndr)
+#Ideas for meaningful plots?
 
 #8.4.3 Plot model 3 (agea)
 ggplot(data_trust, aes(x=agea, y=average_trust)) + geom_jitter(color="blue",alpha = 0.1) +

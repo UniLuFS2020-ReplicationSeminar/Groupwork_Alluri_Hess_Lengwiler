@@ -18,7 +18,6 @@ cat("\014")
 getwd()
 
 #3 Setup libraries
-```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 #install.packages("tidyverse")
@@ -29,11 +28,18 @@ library(tidyverse)
 library(haven)
 library(car)
 library(stargazer)
+<<<<<<< HEAD
+
+
+#4 Load dataset
+dat <- load("data_processed/data_trust.Rdata")
+=======
 library(ggplot2)
 ``` 
 
 #4 Load dataset
 load("data_processed/data_trust.Rdata")
+>>>>>>> 4eccc26f97e4265547cd0154e4396680a3654102
 
 #5 Data manipulation
 ```{r}
@@ -89,7 +95,6 @@ stargazer(model_2, type = "text")
 
 #5.3.3 Table for model 3(agea)
 stargazer(model_3, type = "text")
-
 
 #5.4 Plot models
 

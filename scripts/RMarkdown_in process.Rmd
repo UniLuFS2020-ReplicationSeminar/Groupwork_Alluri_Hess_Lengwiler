@@ -1,3 +1,6 @@
+I added the Sections Introduction, Hypotheses, Data, Operationalisation and Methodology. Feel free to change anything that you don't like or even delete part (e.g. Hypotheses) if you think they are not 
+useful for our purpose 
+
 # How does trust in the government vary across various demographics?
 
 Trust in government is important for both conceptual and practical reasons. At a conceptual level, trust is an important measure of the legitimacy required to achieve compliance with public policy, thereby increasing the ability of government to achieve the intended goals of its policies and enabling governments to serve the public effectively. Since we know that distrustful citizens are less likely to engage and participate in politics, trust is also important on a more practical level, as it is necessary to maintain a healthy democracy that thrives on the engagement and participation of its citizens.

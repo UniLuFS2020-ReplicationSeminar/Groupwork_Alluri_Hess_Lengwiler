@@ -29,32 +29,49 @@ library(tidyverse)
 library(haven)
 library(car)
 library(stargazer)
+library(ggplot2)
 ``` 
 
 #4 Load dataset
-dat <- load("data_processed/dat_trust.Rdata")
+load("data_processed/data_trust.Rdata")
 
+#5 Data manipulation
+```{r}
 # Create "Age Groups"
-data_trust <- data_trust %>% 
+dat <- data_trust %>% 
   mutate(age_group = cut(agea, 
                          breaks = c(14, 24, 44, 64, 90),
                          labels = c("Youth", "Young_Adult", "Middle", "Senior")))
 
+# Convert domicil and gndr into factors, add labels
+dat$domicil <- factor(data_trust$domicil, 
+                      levels = c(1,2,3,4,5),
+                      labels = c("Big_City", "Suburb", "Small_City", 
+                      "Country_Village","Farm_Countryside"))
+
+dat$gndr<- factor(data_trust$gndr, 
+                  levels = c(1,2), 
+                  labels = c("Male", "Female"))
+```
 
 #5 Inference Statistic
-#5.1 Convert domicil and gndr into factors, add labels
-data_trust$domicil <- factor(data_trust$domicil, levels = c(1,2,3,4,5), labels = c("Big City", "Suburbs", "Town/Small City", "Country Village","Farm/Countryside"))
-data_trust$gndr<- factor(data_trust$gndr, levels = c(1,2), labels = c("Male", "Female"))
+#5.1
+
+
 
 #5.2 Run individual linear regressions for each independent variable
 #5.2.1 Model 1: Independent Variable: domicil
-model_1 <- lm(average_trust ~ domicil, data_trust)
+#model_1 <- lm(average_trust ~ domicil, dat)
+model_1 <- lm(t_score ~ domicil, dat)
+
 
 #5.2.2 Model 2: Independent Variable: gndr
-model_2 <- lm(average_trust ~ gndr, data_trust)
+#model_2 <- lm(average_trust ~ gndr, dat)
+model_2 <- lm(t_score ~ gndr, dat)
 
 #5.2.3 Model 3: Independent Variable: agea
-model_3 <- lm(average_trust ~ agea, data_trust)
+#model_3 <- lm(average_trust ~ agea, data)
+model_3 <- lm(t_score ~ agea, data)
 
 #5.3 Create Tables
 #5.3.1 Table for model 1(domicil)
@@ -68,15 +85,46 @@ stargazer(model_3, type = "text")
 
 
 #5.4 Plot models
-#5.4.1 Plot Model 1 (domicil)
 
-#5.4.2 Plot Model 2 (gndr)
+#5.4.1 Plot Model 1 (domicil)
+```{r}
+ggplot(dat, aes(domicil, t_score, fill = domicil))+
+  geom_boxplot()+
+  theme_bw()+
+  labs(title = "Trust level comparison based on living location",
+       x = "Domicile",
+       y = "Trust Score")
+```
+COMMENT HERE: On avg F_C have higher trust levels of about 6
+
+
+
+
+
 
 #5.4.3 Plot model 3 (agea)
-ggplot(data_trust, aes(x=agea, y=average_trust)) + geom_jitter(color="blue",alpha = 0.1) +
+```{r}
+ggplot(data_trust, aes(x=agea, y=average_trust))+ geom_jitter(color="blue",alpha = 0.1) +
   geom_smooth(method ="lm", formula =y ~x, se =TRUE, color = "red") + theme_minimal() +
   scale_y_continuous(limits = c(0,10),breaks=c(0,1,2,3,4,5, 6, 7, 8, 9,10)) +
   scale_x_continuous(limits = c(15, 90), breaks=seq(15,90, by=5)) 
+```
+#ggplot(dat, aes(x=agea, y=average_trust)) + geom_jitter(color="blue",alpha = 0.1) +
+#  geom_smooth(method ="lm", formula =y ~x, se =TRUE, color = "red") + theme_minimal() +
+#  scale_y_continuous(limits = c(0,10),breaks=c(0,1,2,3,4,5, 6, 7, 8, 9,10)) +
+#  scale_x_continuous(limits = c(15, 90), breaks=seq(15,90, by=5)) 
+
+```{r}
+ggplot(dat, aes(agea, t_score))+
+  geom_jitter(color = "blue", alpha = 0.1)+
+  geom_smooth(method = "lm", color = "red")+
+  labs(title = "Trust Score vs Age",
+       x = "Age",
+       y = "Trust Score")+
+  theme_bw()
+```
+ADD COMMENT HERE
+
 
 
       

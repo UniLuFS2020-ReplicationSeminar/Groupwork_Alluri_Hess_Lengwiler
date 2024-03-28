@@ -6,21 +6,25 @@ cat("\014")
 getwd()
 
 #3 Get needed libraries
-install.packages("tidyverse")
-install.packages("haven")
-intall.packages("dplyr")
+#install.packages("tidyverse")
+#install.packages("haven")
+#intall.packages("dplyr")
 library(tidyverse)
 library(haven)
 library(dplyr)
 
 #4 Get dataset
-data <- read_dta("ESS10.dta")
+data <- read_dta("data_original/ESS10.dta")
 
 #5 Subset only needed data
-data_trust <- data %>% select(idno,agea,gndr, domicil,trstprl,trstlgl, trstplc, trstplt, trstprt, trstep, trstun)
+data_trust <- data %>% 
+  select(idno, agea, gndr, domicil,
+         trstprl, trstlgl, trstplc, 
+         trstplt, trstprt, trstep, trstun)
 
 #6 Add variable "average trust in government"
-data_trust$average_trust <- rowMeans(data[, c("trstprl","trstlgl", "trstplc", "trstplt", "trstprt", "trstep", "trstun")], na.rm=TRUE)
+data_trust$average_trust <- 
+  rowMeans(data[, c("trstprl","trstlgl", "trstplc", "trstplt", "trstprt", "trstep", "trstun")], na.rm=TRUE)
 
 #7 Manual control
 View(data_trust)

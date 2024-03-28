@@ -20,7 +20,12 @@ data <- read_dta("data_original/ESS10.dta")
 data_trust <- data %>% 
   select(idno, agea, gndr, domicil,
          trstprl, trstlgl, trstplc, 
+<<<<<<< HEAD
          trstplt, trstprt, trstep, trstun)
+=======
+         trstplt, trstprt, trstep, trstun, rlgdnm) %>% 
+  drop_na()
+>>>>>>> 4eccc26f97e4265547cd0154e4396680a3654102
 
 
 #6 Add variable "average trust in government"

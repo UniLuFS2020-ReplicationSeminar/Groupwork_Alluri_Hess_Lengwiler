@@ -1,3 +1,15 @@
+---
+title: "Data Mining using R"
+subtitle: "CE1"
+authors: "Silvan. H, Kerim. L, Vishal. A"
+date: "29.03.2024"
+output: 
+  html_document:
+  toc: true
+toc_float: true
+theme: united
+---
+
 #1 Clear all previous data and commands 
 rm(list = ls())
 cat("\014")
@@ -5,15 +17,19 @@ cat("\014")
 #2 Check working directory
 getwd()
 
-#3 Get needed libraries
-install.packages("tidyverse")
-install.packages("haven")
-install.packages("car")
-install.packages("stargazer")
+#3 Setup libraries
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#install.packages("tidyverse")
+#install.packages("haven")
+#install.packages("car")
+#install.packages("stargazer")
 library(tidyverse)
 library(haven)
 library(car)
 library(stargazer)
+``` 
 
 #4 Get dataset
 data <- read_dta("ESS10.dta")

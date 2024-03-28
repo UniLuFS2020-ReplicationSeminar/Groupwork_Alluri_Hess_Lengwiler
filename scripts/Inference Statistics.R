@@ -32,8 +32,13 @@ library(stargazer)
 ``` 
 
 #4 Load dataset
-data <- read_dta("ESS10.dta")
+dat <- load("data_processed/dat_trust.Rdata")
 
+# Create "Age Groups"
+data_trust <- data_trust %>% 
+  mutate(age_group = cut(agea, 
+                         breaks = c(14, 24, 44, 64, 90),
+                         labels = c("Youth", "Young_Adult", "Middle", "Senior")))
 
 
 #5 Inference Statistic

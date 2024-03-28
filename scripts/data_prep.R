@@ -16,16 +16,31 @@ library(dplyr)
 #4 Get dataset
 data <- read_dta("data_original/ESS10.dta")
 
-#5 Subset only needed data
+#5 Subset only needed data and remove NA's
 data_trust <- data %>% 
   select(idno, agea, gndr, domicil,
          trstprl, trstlgl, trstplc, 
-         trstplt, trstprt, trstep, trstun)
+         trstplt, trstprt, trstep, trstun) %>% 
+  drop_na()
 
-#6 Add variable "average trust in government"
+#6 Add variable "average trust in government" NOTE- works if you remove line 24 
 data_trust$average_trust <- 
   rowMeans(data[, c("trstprl","trstlgl", "trstplc", "trstplt", "trstprt", "trstep", "trstun")], na.rm=TRUE)
 
-#7 Manual control
+#7 Custom "Trust Score" creation based on assumed weightage of trust variables
+data_trust$t_score <-  with(data_trust,
+                          trstprl * 0.25 + 
+                          trstlgl * 0.2 + 
+                          trstplc * 0.15 + 
+                          trstplt * 0.05 + 
+                          trstprt * 0.1 + 
+                          trstep * 0.15 + 
+                          trstun * 0.1 ) 
+
+
+# Manual control
 View(data_trust)
+
+#Save processed data
+save(data_trust, file = "data_processed/dat_trust.RData")
 

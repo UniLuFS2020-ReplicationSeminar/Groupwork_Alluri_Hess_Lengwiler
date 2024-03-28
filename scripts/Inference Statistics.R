@@ -43,7 +43,7 @@ dat <- data_trust %>%
                          breaks = c(14, 24, 44, 64, 90),
                          labels = c("Youth", "Young_Adult", "Middle", "Senior")))
 
-# Convert domicil and gndr into factors, add labels
+# Convert domicil, gndr and rlgdnm(religion) into factors
 dat$domicil <- factor(data_trust$domicil, 
                       levels = c(1,2,3,4,5),
                       labels = c("Big_City", "Suburb", "Small_City", 
@@ -52,6 +52,13 @@ dat$domicil <- factor(data_trust$domicil,
 dat$gndr<- factor(data_trust$gndr, 
                   levels = c(1,2), 
                   labels = c("Male", "Female"))
+
+dat$rlgdnm <- factor(data_trust$rlgdnm,
+                      levels = c(1, 2, 3, 4, 5, 6, 7, 8),
+                      labels = c("Roman_Catholic", "Protestant", "Eastern_Orthodox",
+                                 "Other_Christian denomination","Jewish", "Islam",
+                                 "Eastern religions", "Other Non-Christian religions"))
+
 ```
 
 #5 Inference Statistic
@@ -71,7 +78,7 @@ model_2 <- lm(t_score ~ gndr, dat)
 
 #5.2.3 Model 3: Independent Variable: agea
 #model_3 <- lm(average_trust ~ agea, data)
-model_3 <- lm(t_score ~ agea, data)
+model_3 <- lm(t_score ~ agea, dat)
 
 #5.3 Create Tables
 #5.3.1 Table for model 1(domicil)
@@ -94,6 +101,14 @@ ggplot(dat, aes(domicil, t_score, fill = domicil))+
   labs(title = "Trust level comparison based on living location",
        x = "Domicile",
        y = "Trust Score")
+
+ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
+  geom_boxplot()+
+  theme_bw()+
+  labs(title = "Trust level comparison based on living location",
+       x = "Domicile",
+       y = "Trust Score")
+
 ```
 COMMENT HERE: On avg F_C have higher trust levels of about 6
 
@@ -126,5 +141,14 @@ ggplot(dat, aes(agea, t_score))+
 ADD COMMENT HERE
 
 
-
-      
+#5.4.3 Plot model 3 (rlgdnm-religion)
+```{r}
+ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(axis.text.x = element_blank())+
+  labs(title = "Trust level comparison based on Religion",
+       x = "Religion",
+       y = "Trust Score")
+```
+      ADD COMMENT HERE

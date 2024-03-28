@@ -1,1 +1,37 @@
-R Markdown file in process
+# How does trust in the government vary across various demographics?
+
+Trust in government is important for both conceptual and practical reasons. At a conceptual level, trust is an important measure of the legitimacy required to achieve compliance with public policy, thereby increasing the ability of government to achieve the intended goals of its policies and enabling governments to serve the public effectively. Since we know that distrustful citizens are less likely to engage and participate in politics, trust is also important on a more practical level, as it is necessary to maintain a healthy democracy that thrives on the engagement and participation of its citizens.
+
+While studies have found individual demographic variables not to be major determinant of trust in government institutions, individual demographic factors can be used to predict long-term trends regarding trust in government. Therefore, this class exercise investigates the relationship between trust in government and three demographic factors that are considered to be connected with attitudes toward the government. 
+
+## Hypotheses
+
+Our first demographic variable of interest is the residence of citizens on an urban – rural continuum. Recent studies suggest that political trust may follow a core-periphery pattern with decreasing levels of trust from core to periphery. Therefore, we hypothesis:
+
+*H1*: People living in (more) urban areas have a higher level of trust in government than people living in (more) rural areas.
+
+Our second demographic variable of interest is age. Older people tend to be more collectively oriented and have experienced increasing civil liberties, gains regarding their economic situation as well as an expansion of the welfare state during the second half of the 20th century than younger generations. Therefore, we hypothesis:
+
+*H2*: The older a person is, the higher their level of trust in government.
+
+Our third demographic variable of interest is gender. In recent decades, the Women's dependence on the public sector seems to have increased, both directly, in that the proportion of women employed in the public sector is relatively higher than in the private sector, and indirectly, in that public institutions have taken over some of women's traditional caring responsibilities. At the same time, the growth in public spending has led to a higher tax burden for men, which could have resulted in a more negative attitude towards public sector institutions. Therefore we hypothesis:
+
+*H3*: The level of trust in government is higher among women than among men.
+
+## Data, Operationalisation and Methodology
+
+### Data
+
+To test our hypotheses, we use data from the European Social Survey (ESS). This is a representative survey for 39 European countries. We use the ESS wave 10 integrated dataset. 
+
+### Operationalisation
+
+Our first independent variable, corresponding to H1, is *region*. As it is better to consider the distinction between urban and rural areas as a spectrum rather than a binary distinction, we use the information contained in the ESS on the composition of the region in which respondents live. The variable is categorical, where 1 = large city, 2 = suburb, 3 = town, 4 = rural village, 5 = farm/countryside. Our second independent variable corresponding to H2 is *age*, measured as a continuous variable ranging from 15 (low age) to 90 (high age). The last independent variable, corresponding to H3, is *gender* and is coded as a dummy variable where 1 = male and 2 = female.
+
+For our independent variable *trust in government*, we used a set of variables provided by the ESS. The variables are (1) trust in the country's parliament, (2) trust in the legal system, (3) trust in the police, (4) trust in politicians, (5) trust in political parties, (6) trust in the European Parliament and (7) trust in the United Nations. Each of these indicators is measured on a Likert scale from 0 (low trust) to 10 (high trust). Our measure of trust in government is a composite measure of the above variables, calculated as the mean of all 7 indicators. 
+
+### Methodology
+
+We test our hypotheses using linear regression models.
+
+## Findings

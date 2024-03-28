@@ -20,10 +20,10 @@ data <- read_dta("data_original/ESS10.dta")
 data_trust <- data %>% 
   select(idno, agea, gndr, domicil,
          trstprl, trstlgl, trstplc, 
-         trstplt, trstprt, trstep, trstun) %>% 
-  drop_na()
+         trstplt, trstprt, trstep, trstun)
 
-#6 Add variable "average trust in government" NOTE- works if you remove line 24 
+
+#6 Add variable "average trust in government"
 data_trust$average_trust <- 
   rowMeans(data[, c("trstprl","trstlgl", "trstplc", "trstplt", "trstprt", "trstep", "trstun")], na.rm=TRUE)
 

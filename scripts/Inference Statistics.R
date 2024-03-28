@@ -18,7 +18,6 @@ cat("\014")
 getwd()
 
 #3 Setup libraries
-```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 #install.packages("tidyverse")
@@ -29,10 +28,10 @@ library(tidyverse)
 library(haven)
 library(car)
 library(stargazer)
-``` 
+
 
 #4 Load dataset
-dat <- load("data_processed/dat_trust.Rdata")
+dat <- load("data_processed/data_trust.Rdata")
 
 # Create "Age Groups"
 data_trust <- data_trust %>% 
@@ -65,7 +64,6 @@ stargazer(model_2, type = "text")
 
 #5.3.3 Table for model 3(agea)
 stargazer(model_3, type = "text")
-
 
 #5.4 Plot models
 #5.4.1 Plot Model 1 (domicil)

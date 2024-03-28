@@ -42,5 +42,5 @@ data_trust$t_score <-  with(data_trust,
 View(data_trust)
 
 #Save processed data
-save(data_trust, file = "data_processed/dat_trust.RData")
+save(data_trust, file = "data_processed/data_trust.RData")
 

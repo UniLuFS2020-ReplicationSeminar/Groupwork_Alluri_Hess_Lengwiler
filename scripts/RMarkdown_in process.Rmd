@@ -54,7 +54,7 @@ To test our hypotheses, we use data from the European Social Survey (ESS). This 
 ```{r}
 
 # load dataset
-
+setwd("/Users/kerimlengwiler/Desktop/R_Files/repo_CE1_1/Groupwork_Alluri_Hess_Lengwiler")
 data <- read_dta("data_original/ESS10.dta")
 
 ```
@@ -75,9 +75,9 @@ data_trust <- data %>%
          trstprl, trstlgl, trstplc, 
          trstplt, trstprt, trstep, trstun, rlgdnm) %>% 
   drop_na()
-
+setwd("/Users/kerimlengwiler/Desktop/R_Files/repo_CE1_1/Groupwork_Alluri_Hess_Lengwiler")
 save(data_trust, file = "data_processed/data_trust.RData")
-
+setwd("/Users/kerimlengwiler/Desktop/R_Files/repo_CE1_1/Groupwork_Alluri_Hess_Lengwiler")
 load("data_processed/data_trust.RData") 
 
 

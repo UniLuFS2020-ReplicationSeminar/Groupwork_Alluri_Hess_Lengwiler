@@ -1,3 +1,15 @@
+---
+title: "Data Mining using R"
+subtitle: "CE1"
+authors: "Silvan. H, Kerim. L, Vishal. A"
+date: "29.03.2024"
+output: 
+  html_document:
+  toc: true
+toc_float: true
+theme: united
+---
+
 # How does trust in the government vary across various demographics?
 
 Trust in government is important for both conceptual and practical reasons. At a conceptual level, trust is an important measure of the legitimacy required to achieve compliance with public policy, thereby increasing the ability of government to achieve the intended goals of its policies and enabling governments to serve the public effectively. Since we know that distrustful citizens are less likely to engage and participate in politics, trust is also important on a more practical level, as it is necessary to maintain a healthy democracy that thrives on the engagement and participation of its citizens.
@@ -20,9 +32,39 @@ Our third demographic variable of interest is gender. In recent decades, the Wom
 
 ## Data, Operationalisation and Methods
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Setup libraries
+#install.packages("tidyverse")
+#install.packages("haven")
+#install.packages("car")
+#install.packages("stargazer")
+library(tidyverse)
+library(haven)
+library(car)
+library(stargazer)
+library(ggplot2)
+```
+
 ### Data
 
 To test our hypotheses, we use data from the European Social Survey (ESS). This is a representative survey for 39 European countries. We use the ESS wave 10 integrated dataset. 
+
+```{r}
+
+# load dataset
+
+data <- read_dta("data_original/ESS10.dta")
+
+data_trust <- data %>% 
+  select(idno, agea, gndr, domicil,
+         trstprl, trstlgl, trstplc, 
+         trstplt, trstprt, trstep, trstun, rlgdnm) %>% 
+  drop_na()
+
+```
+
 
 ### Operationalisation
 
@@ -30,8 +72,136 @@ Our first independent variable, corresponding to H1, is *region*. As it is bette
 
 For our independent variable *trust in government*, we used a set of variables provided by the ESS. The variables are (1) trust in the country's parliament, (2) trust in the legal system, (3) trust in the police, (4) trust in politicians, (5) trust in political parties, (6) trust in the European Parliament and (7) trust in the United Nations. Each of these indicators is measured on a Likert scale from 0 (low trust) to 10 (high trust). Our measure of trust (t_score) in government is a composite measure of the above variables based on their assumed importance to an average person. For example, trust in a country's parliament would be of more importance than trust in United Nations, thus a higher weightage is given to the former.
 
+```{r} 
+
+# create subset with relevant variables
+
+data_trust <- data %>% 
+  select(idno, agea, gndr, domicil,
+         trstprl, trstlgl, trstplc, 
+         trstplt, trstprt, trstep, trstun, rlgdnm) %>% 
+  drop_na()
+
+save(data_trust, file = "data_processed/data_trust.RData")
+
+load("data_processed/data_trust.RData")
+
+# create "trust in government" variable
+data_trust$t_score <-  with(data_trust,
+                          trstprl * 0.25 + 
+                          trstlgl * 0.2 + 
+                          trstplc * 0.15 + 
+                          trstplt * 0.05 + 
+                          trstprt * 0.1 + 
+                          trstep * 0.15 + 
+                          trstun * 0.1 ) 
+
+# Create "Age Groups"
+dat <- data_trust %>% 
+  mutate(age_group = cut(agea, 
+                         breaks = c(14, 24, 44, 64, 90),
+                         labels = c("Youth", "Young_Adult", "Middle", "Senior")))
+
+# Convert domicil, gndr and rlgdnm(religion) into factors
+dat$domicil <- factor(data_trust$domicil, 
+                      levels = c(1,2,3,4,5),
+                      labels = c("Big_City", "Suburb", "Small_City", 
+                      "Country_Village","Farm_Countryside"))
+
+dat$gndr<- factor(data_trust$gndr, 
+                  levels = c(1,2), 
+                  labels = c("Male", "Female"))
+
+dat$rlgdnm <- factor(data_trust$rlgdnm,
+                      levels = c(1, 2, 3, 4, 5, 6, 7, 8),
+                      labels = c("Roman_Catholic", "Protestant","Eastern_Orthodox",
+                                 "Other_Christian denomination","Jewish", "Islam",
+                                 "Eastern religions", "Other Non-Christian religions"))
+
+```
+
 ### Methods
 
 We test our hypotheses using linear regression models.
 
-## Findings
+```{r}
+# Model 1: Independent Variable: domicil
+model_1 <- lm(t_score ~ domicil, dat)
+summary(model_1)
+
+# Model 2: Independent Variable: gndr
+model_2 <- lm(t_score ~ gndr, dat)
+summary(model_2)
+
+# Model 3: Independent Variable: agea
+model_3 <- lm(t_score ~ agea, dat)
+summary(model_3)
+
+# Model 4: Multiple linear regression
+model_4 <- lm(t_score ~ domicil + gndr + agea + rlgdnm, dat)
+summary(model_4)
+
+```
+
+## Results
+
+COMMENT HERE
+
+```{r}
+# Plot Model 1 (Domicile vs Trust Score)
+
+ggplot(dat, aes(domicil, t_score, fill = domicil))+
+  geom_boxplot()+
+  theme_bw()+
+  labs(title = "Trust level comparison based on living location",
+       x = "Domicile",
+       y = "Trust Score")
+```
+
+COMMENT HERE
+
+```{r}
+# Plot model 2 (Gender vs Trust Score)
+
+dat2 <- dat %>% 
+  group_by(gndr) %>% 
+  summarise(med_tscore = median(t_score))
+            
+ggplot(dat2, aes(gndr, med_tscore, fill = gndr))+
+    geom_col()+
+    labs(title = "Median trust score across genders",
+         x = "Gender",
+         y = "Trust Score")
+```
+
+COMMENT HERE
+
+```{r}
+# Plot model 3 (Age vs Trust Score)
+ggplot(dat, aes(agea, t_score))+
+  geom_jitter(color = "blue", alpha = 0.1)+
+  geom_smooth(method = "lm", color = "red")+
+  labs(title = "Trust Score vs Age",
+       x = "Age",
+       y = "Trust Score")+
+  theme_bw()
+```
+
+COMMENT HERE
+
+```{r}
+# Plot model 4 (Religion vs Trust Score)
+ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(axis.text.x = element_blank())+
+  labs(title = "Trust level comparison based on Religion",
+       x = "Religion",
+       y = "Trust Score")
+```
+
+COMMENT HERE
+
+## Discussion
+
+Comment HERE

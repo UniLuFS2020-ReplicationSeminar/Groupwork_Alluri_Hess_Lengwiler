@@ -161,6 +161,7 @@ plot5 <- ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
        y = "Trust Score")
 ```
 
+```{r}  
 #6 Save Plots
 
 ggsave("trust_score_distribution.png", plot = plot1, path = "plots", dpi = 300)
@@ -169,6 +170,6 @@ ggsave("gender_tscore.png", plot = plot3, path = "plots", dpi = 300)
 ggsave("age_tscore.png", plot = plot4, path = "plots", dpi = 400)
 ggsave("relgion_tscore.png", plot = plot5, path = "plots", dpi = 600)
 
-
+```  
 
 

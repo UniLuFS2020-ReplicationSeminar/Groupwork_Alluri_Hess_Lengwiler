@@ -18,7 +18,7 @@ cat("\014")
 getwd()
 
 #3 Setup libraries
-```{r setup, include = FALSE}
+
 knitr::opts_chunk$set(echo = TRUE)
 
 #install.packages("tidyverse")
@@ -30,13 +30,13 @@ library(haven)
 library(car)
 library(stargazer)
 library(ggplot2)
-``` 
+
 
 #4 Load dataset
 load("data_processed/data_trust.Rdata")
 
 #5 Data manipulation
-```{r}
+
 # Create "Age Groups"
 dat <- data_trust %>% 
   mutate(age_group = cut(agea, 
@@ -59,7 +59,6 @@ dat$rlgdnm <- factor(data_trust$rlgdnm,
                                  "Other_Christian denomination","Jewish", "Islam",
                                  "Eastern religions", "Other Non-Christian religions"))
 
-```
 
 #5 Inference Statistic
 #5.1
@@ -87,19 +86,19 @@ stargazer(model_3, type = "text")
 #5.4 Plot models
 
 #5.4.1 Plot Model 1 (Domicile vs Trust Score)
-```{r}
+
 ggplot(dat, aes(domicil, t_score, fill = domicil))+
   geom_boxplot()+
   theme_bw()+
   labs(title = "Trust level comparison based on living location",
        x = "Domicile",
        y = "Trust Score")
-```
-COMMENT HERE: On avg F_C have higher trust levels of about 6
+
+
 
 
 #5.4.3 Plot model 2 (Gender vs Trust Score)
-```{r}
+
 dat2 <- dat %>% 
   group_by(gndr) %>% 
   summarise(med_tscore = median(t_score))
@@ -109,13 +108,13 @@ ggplot(dat2, aes(gndr, med_tscore, fill = gndr))+
     labs(title = "Median trust score across genders",
          x = "Gender",
          y = "Trust Score")
-```
+
 
 
 
 #5.4.3 Plot model 3 (Age vs Trust Score)
 
-```{r}
+
 ggplot(dat, aes(agea, t_score))+
   geom_jitter(color = "blue", alpha = 0.1)+
   geom_smooth(method = "lm", color = "red")+
@@ -123,12 +122,11 @@ ggplot(dat, aes(agea, t_score))+
        x = "Age",
        y = "Trust Score")+
   theme_bw()
-```
-ADD COMMENT HERE
+
 
 
 #5.4.4 Plot model 4 (Religion vs Trust Score)
-```{r}
+
 ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
   geom_boxplot()+
   theme_bw()+
@@ -137,5 +135,3 @@ ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
        x = "Religion",
        y = "Trust Score")
 
-```
-      ADD COMMENT HERE

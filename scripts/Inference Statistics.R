@@ -18,6 +18,7 @@ cat("\014")
 getwd()
 
 #3 Setup libraries
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 #install.packages("tidyverse")
@@ -28,18 +29,11 @@ library(tidyverse)
 library(haven)
 library(car)
 library(stargazer)
-<<<<<<< HEAD
-
-
-#4 Load dataset
-dat <- load("data_processed/data_trust.Rdata")
-=======
 library(ggplot2)
 ``` 
 
 #4 Load dataset
 load("data_processed/data_trust.Rdata")
->>>>>>> 4eccc26f97e4265547cd0154e4396680a3654102
 
 #5 Data manipulation
 ```{r}
@@ -69,21 +63,14 @@ dat$rlgdnm <- factor(data_trust$rlgdnm,
 
 #5 Inference Statistic
 #5.1
-
-
-
 #5.2 Run individual linear regressions for each independent variable
 #5.2.1 Model 1: Independent Variable: domicil
-#model_1 <- lm(average_trust ~ domicil, dat)
 model_1 <- lm(t_score ~ domicil, dat)
 
-
 #5.2.2 Model 2: Independent Variable: gndr
-#model_2 <- lm(average_trust ~ gndr, dat)
 model_2 <- lm(t_score ~ gndr, dat)
 
 #5.2.3 Model 3: Independent Variable: agea
-#model_3 <- lm(average_trust ~ agea, data)
 model_3 <- lm(t_score ~ agea, dat)
 
 #5.3 Create Tables
@@ -95,6 +82,7 @@ stargazer(model_2, type = "text")
 
 #5.3.3 Table for model 3(agea)
 stargazer(model_3, type = "text")
+
 
 #5.4 Plot models
 
@@ -126,16 +114,6 @@ ggplot(dat2, aes(gndr, med_tscore, fill = gndr))+
 
 
 #5.4.3 Plot model 3 (Age vs Trust Score)
-```{r}
-ggplot(data_trust, aes(x=agea, y=average_trust))+ geom_jitter(color="blue",alpha = 0.1) +
-  geom_smooth(method ="lm", formula =y ~x, se =TRUE, color = "red") + theme_minimal() +
-  scale_y_continuous(limits = c(0,10),breaks=c(0,1,2,3,4,5, 6, 7, 8, 9,10)) +
-  scale_x_continuous(limits = c(15, 90), breaks=seq(15,90, by=5)) 
-```
-#ggplot(dat, aes(x=agea, y=average_trust)) + geom_jitter(color="blue",alpha = 0.1) +
-#  geom_smooth(method ="lm", formula =y ~x, se =TRUE, color = "red") + theme_minimal() +
-#  scale_y_continuous(limits = c(0,10),breaks=c(0,1,2,3,4,5, 6, 7, 8, 9,10)) +
-#  scale_x_continuous(limits = c(15, 90), breaks=seq(15,90, by=5)) 
 
 ```{r}
 ggplot(dat, aes(agea, t_score))+
@@ -149,7 +127,7 @@ ggplot(dat, aes(agea, t_score))+
 ADD COMMENT HERE
 
 
-#5.4.4 Plot model 3 (Religion vs Trust Score)
+#5.4.4 Plot model 4 (Religion vs Trust Score)
 ```{r}
 ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
   geom_boxplot()+

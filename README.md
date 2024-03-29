@@ -1,6 +1,5 @@
-### Groupwork_Alluri_Hess_Lengwiler
+### Groupwork_Alluri_Hess_Lengwiler: Repository Structure
 
-##Repository Structure
 The repository is structured as follows:
 1. data_original: contains the original data from the European social survey
 2. data_processed: contains the cleansed data used for the class exercise 

@@ -57,12 +57,6 @@ To test our hypotheses, we use data from the European Social Survey (ESS). This 
 
 data <- read_dta("data_original/ESS10.dta")
 
-data_trust <- data %>% 
-  select(idno, agea, gndr, domicil,
-         trstprl, trstlgl, trstplc, 
-         trstplt, trstprt, trstep, trstun, rlgdnm) %>% 
-  drop_na()
-
 ```
 
 
@@ -84,7 +78,8 @@ data_trust <- data %>%
 
 save(data_trust, file = "data_processed/data_trust.RData")
 
-load("data_processed/data_trust.RData")
+load("data_processed/data_trust.RData") 
+
 
 # create "trust in government" variable
 data_trust$t_score <-  with(data_trust,

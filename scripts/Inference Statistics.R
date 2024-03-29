@@ -94,28 +94,44 @@ stargazer(model_3, type = "text")
 
 ```
 
-#5.4 Plot models
+#5.4 Plots
 
 ```{r}
-#5.4.1 Plot Model 1 (Domicile vs Trust Score)
+#5.4.1 Plot1 - Distribution of Trust Score
 
-ggplot(dat, aes(domicil, t_score, fill = domicil))+
+plot1 <- ggplot(dat, aes(t_score))+
+  geom_histogram(fill = "lightblue", binwidth = 0.5)+
+  geom_vline(aes(xintercept = mean(t_score)), color = "red", linetype = "dashed")+
+  geom_vline(aes(xintercept = median(t_score)), color = "purple")+
+  labs(title = "Distribution of Trust Score",
+       x = "Trust Score",
+       y = "Frequency")+
+  theme_bw()
+
+```
+
+
+```{r}
+#5.4.2 Plot2 - Domicile vs Trust Score
+
+plot2 <- ggplot(dat, aes(domicil, t_score, fill = domicil))+
   geom_boxplot()+
   theme_bw()+
+  theme(axis.text.x = element_blank())+
   labs(title = "Trust level comparison based on living location",
        x = "Domicile",
        y = "Trust Score")
 ```
-COMMENT HERE
 
 ```{r}
-#5.4.3 Plot model 2 (Gender vs Trust Score)
+#5.4.3 Plot3 - Gender vs Trust Score
 
+#Getting median trust score for each gender
 dat2 <- dat %>% 
   group_by(gndr) %>% 
   summarise(med_tscore = median(t_score))
             
-ggplot(dat2, aes(gndr, med_tscore, fill = gndr))+
+plot3 <- ggplot(dat2, aes(gndr, med_tscore, fill = gndr))+
     geom_col()+
     labs(title = "Median trust score across genders",
          x = "Gender",
@@ -123,8 +139,8 @@ ggplot(dat2, aes(gndr, med_tscore, fill = gndr))+
 ```
 
 ```{r}
-#5.4.3 Plot model 3 (Age vs Trust Score)
-ggplot(dat, aes(agea, t_score))+
+#5.4.4 Plot4 - Age vs Trust Score
+plot4 <- ggplot(dat, aes(agea, t_score))+
   geom_jitter(color = "blue", alpha = 0.1)+
   geom_smooth(method = "lm", color = "red")+
   labs(title = "Trust Score vs Age",
@@ -133,11 +149,10 @@ ggplot(dat, aes(agea, t_score))+
   theme_bw()
 ```
 
-COMMENT HERE
 
 ```{r}
-#5.4.4 Plot model 4 (Religion vs Trust Score)
-ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
+#5.4.5 Plot5 - Religion vs Trust Score
+plot5 <- ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
   geom_boxplot()+
   theme_bw()+
   theme(axis.text.x = element_blank())+
@@ -145,4 +160,8 @@ ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
        x = "Religion",
        y = "Trust Score")
 ```
-COMMENT HERE
+
+#6 Save Plots
+```{r}
+ggsave("trust_score_distribution.png", plot = plot1, path = "plots", dpi = 300)
+```

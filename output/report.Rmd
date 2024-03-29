@@ -1,0 +1,210 @@
+---
+title: "Data Mining using R"
+subtitle: "CE1"
+authors: "Silvan. H, Kerim. L, Vishal. A"
+date: "29.03.2024"
+output: 
+  html_document:
+  toc: true
+toc_float: true
+theme: united
+---
+
+# How does trust in the government vary across various demographics?
+
+Trust in government is important for both conceptual and practical reasons. At a conceptual level, trust is an important measure of the legitimacy required to achieve compliance with public policy, thereby increasing the ability of government to achieve the intended goals of its policies and enabling governments to serve the public effectively. Since we know that distrustful citizens are less likely to engage and participate in politics, trust is also important on a more practical level, as it is necessary to maintain a healthy democracy that thrives on the engagement and participation of its citizens.
+
+While studies have found individual demographic variables not to be major determinant of trust in government institutions, individual demographic factors can be used to predict long-term trends regarding trust in government. Therefore, this class exercise investigates the relationship between trust in government and three demographic factors that are considered to be connected with attitudes toward the government.
+
+## Hypotheses
+
+Our first demographic variable of interest is the residence of citizens on an urban – rural continuum. Recent studies suggest that political trust may follow a core-periphery pattern with decreasing levels of trust from core to periphery. Therefore, we hypothesis:
+
+*H1*: People living in (more) urban areas have a higher level of trust in government than people living in (more) rural areas.
+
+Our second demographic variable of interest is age. Older people tend to be more collectively oriented and have experienced increasing civil liberties, gains regarding their economic situation as well as an expansion of the welfare state during the second half of the 20th century than younger generations. Therefore, we hypothesis:
+
+*H2*: The older a person is, the higher their level of trust in government.
+
+Our third demographic variable of interest is gender. In recent decades, the Women's dependence on the public sector seems to have increased, both directly, in that the proportion of women employed in the public sector is relatively higher than in the private sector, and indirectly, in that public institutions have taken over some of women's traditional caring responsibilities. At the same time, the growth in public spending has led to a higher tax burden for men, which could have resulted in a more negative attitude towards public sector institutions. Therefore we hypothesis:
+
+*H3*: The level of trust in government is higher among women than among men.
+
+Our fourth demographic variable of interest is religion. Religion has been shown to be an important factor in shaping political attitudes and behavior. For example, studies have shown that religious individuals are more likely to trust government institutions than non-religious individuals. Therefore, we hypothesis: 
+
+*H4*: More traditionalist religions like Islamic or Orthodox have a lower level of trust in political institutions than more progressive religions like Protestant or Eastern religions.
+
+## Data, Operationalisation and Methods
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Setup libraries
+#install.packages("tidyverse")
+#install.packages("haven")
+#install.packages("car")
+#install.packages("stargazer")
+library(tidyverse)
+library(haven)
+library(car)
+library(stargazer)
+library(ggplot2)
+```
+
+### Data
+
+To test our hypotheses, we use data from the European Social Survey (ESS). This is a representative survey for 39 European countries. We use the ESS wave 10 integrated dataset.
+
+```{r}
+
+# load dataset
+data <- read_dta("data_original/ESS10.dta")
+
+```
+
+### Operationalisation
+
+Our first independent variable, corresponding to H1, is *region*. As it is better to consider the distinction between urban and rural areas as a spectrum rather than a binary distinction, we use the information contained in the ESS on the composition of the region in which respondents live. The variable is categorical, where 1 = large city, 2 = suburb, 3 = town, 4 = rural village, 5 = farm/countryside. Our second independent variable corresponding to H2 is *age*, measured as a continuous variable ranging from 15 (low age) to 90 (high age). The last independent variable, corresponding to H3, is *gender* and is coded as a dummy variable where 1 = male and 2 = female.
+
+For our independent variable *trust in government*, we used a set of variables provided by the ESS. The variables are (1) trust in the country's parliament, (2) trust in the legal system, (3) trust in the police, (4) trust in politicians, (5) trust in political parties, (6) trust in the European Parliament and (7) trust in the United Nations. Each of these indicators is measured on a Likert scale from 0 (low trust) to 10 (high trust). Our measure of trust (t_score) in government is a composite measure of the above variables based on their assumed importance to an average person. For example, trust in a country's parliament would be of more importance than trust in United Nations, thus a higher weightage is given to the former.
+
+```{r}
+
+# create subset with relevant variables
+
+data_trust <- data %>% 
+  select(idno, agea, gndr, domicil,
+         trstprl, trstlgl, trstplc, 
+         trstplt, trstprt, trstep, trstun, rlgdnm) %>% 
+  drop_na()
+
+save(data_trust, file = "data_processed/data_trust.RData")
+
+load("data_processed/data_trust.RData") 
+
+
+# create "trust in government" variable
+data_trust$t_score <-  with(data_trust,
+                          trstprl * 0.25 + 
+                          trstlgl * 0.2 + 
+                          trstplc * 0.15 + 
+                          trstplt * 0.05 + 
+                          trstprt * 0.1 + 
+                          trstep * 0.15 + 
+                          trstun * 0.1 ) 
+
+# Create "Age Groups"
+dat <- data_trust %>% 
+  mutate(age_group = cut(agea, 
+                         breaks = c(14, 24, 44, 64, 90),
+                         labels = c("Youth", "Young_Adult", "Middle", "Senior")))
+
+# Convert domicil, gndr and rlgdnm(religion) into factors
+dat$domicil <- factor(data_trust$domicil, 
+                      levels = c(1,2,3,4,5),
+                      labels = c("Big_City", "Suburb", "Small_City", 
+                      "Country_Village","Farm_Countryside"))
+
+dat$gndr<- factor(data_trust$gndr, 
+                  levels = c(1,2), 
+                  labels = c("Male", "Female"))
+
+dat$rlgdnm <- factor(data_trust$rlgdnm,
+                      levels = c(1, 2, 3, 4, 5, 6, 7, 8),
+                      labels = c("Roman_Catholic", "Protestant","Eastern_Orthodox",
+                                 "Other_Christian denomination","Jewish", "Islam",
+                                 "Eastern religions", "Other Non-Christian religions"))
+
+```
+
+### Methods
+
+We test our hypotheses using linear regression models.
+
+```{r}
+# Model 1: Independent Variable: domicil
+model_1 <- lm(t_score ~ domicil, dat)
+summary(model_1)
+
+# Model 2: Independent Variable: gndr
+model_2 <- lm(t_score ~ gndr, dat)
+summary(model_2)
+
+# Model 3: Independent Variable: agea
+model_3 <- lm(t_score ~ agea, dat)
+summary(model_3)
+
+# Model 4: Multiple linear regression
+model_4 <- lm(t_score ~ domicil + gndr + agea + rlgdnm, dat)
+summary(model_4)
+
+```
+
+## Results
+
+In the following, we will present the results of the regression models.
+
+```{r}
+# Plot Model 1 (Domicile vs Trust Score)
+
+ggplot(dat, aes(domicil, t_score, fill = domicil))+
+  geom_boxplot()+
+  theme_bw()+
+  labs(title = "Trust level comparison based on living location",
+       x = "Domicile",
+       y = "Trust Score")
+```
+
+The boxplot above shows the highest trust index for people living in farms on the countryside. The lowest trust index is for people living in the big city. This is interesting as it contradicts our hypothesis, that people in the city have a higher trust index. The Linear Regression Model for the relationship between Trust Score and Domicile is significant. For the all the variables but the Country Village, the p-value is less than 0.05. This means that we can compare the trust score for the different demographics.
+
+```{r}
+# Plot model 2 (Gender vs Trust Score)
+
+dat2 <- dat %>% 
+  group_by(gndr) %>% 
+  summarise(med_tscore = median(t_score))
+            
+ggplot(dat2, aes(gndr, med_tscore, fill = gndr))+
+    geom_col()+
+    labs(title = "Median trust score across genders",
+         x = "Gender",
+         y = "Trust Score")
+```
+
+The barplot above shows that the median trust score does not differ significantly for Male or Female respondents. The Linear Regression Model for the relationship between Trust Score doesn't give us more information about the relationship between Gender and Trust in Political Institutions.
+
+```{r}
+# Plot model 3 (Age vs Trust Score)
+ggplot(dat, aes(agea, t_score))+
+  geom_jitter(color = "blue", alpha = 0.1)+
+  geom_smooth(method = "lm", color = "red")+
+  labs(title = "Trust Score vs Age",
+       x = "Age",
+       y = "Trust Score")+
+  theme_bw()
+```
+
+The scatterplot above shows that there is almost no relationship between age and trust score. Altough the Linear Regression Model for the relationship between Trust Score and Age is significant. The p-value is less than 0.05.
+
+```{r}
+# Plot model 4 (Religion vs Trust Score)
+ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(axis.text.x = element_blank())+
+  labs(title = "Trust level comparison based on Religion",
+       x = "Religion",
+       y = "Trust Score")
+```
+
+In the boxplot above we can see the most variation in the trust score we have observed for the different variables. The trust score for people with an Eastern religion is the highest, while the trust score for people with a Orthodox religion is the lowest. The Linear Regression Model for the relationship between Trust Score and Religion is significant. For all the variables but the Jewish religion, the p-value is less than 0.05. This means that we can compare the trust score for the different Religions.
+
+
+
+## Discussion
+
+In conclusion, our results show that most variation of trust in government can be observed in the living area and religion of the respondents. The trust score for people living in the countryside is higher than for people living in the city. The trust score for people with an Eastern religion is higher than for people with an Orthodox religion.
+
+This means we can reject our first hypothesis, that people living in the city have a higher trust score than people living in the countryside. For our second and third hypothesis, we can neither confirm nor reject them. The trust score does not differ significantly. On the other hand, we can confirm our fourth hypothesis, that people with an Eastern religion have a higher trust score than people with an Orthodox religion.
+
+Our results are in line with previous studies that have found that individual demographic variables are not major determinants of trust in government institutions. However, our results suggest that individual demographic factors can be used to predict long-term trends regarding trust in government. Future research should focus on the relationship between trust in government and other demographic factors, such as education, income, and employment status.

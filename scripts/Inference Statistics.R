@@ -18,7 +18,7 @@ cat("\014")
 getwd()
 
 #3 Setup libraries
-
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 #install.packages("tidyverse")
@@ -30,13 +30,13 @@ library(haven)
 library(car)
 library(stargazer)
 library(ggplot2)
-
+```
 
 #4 Load dataset
 load("data_processed/data_trust.Rdata")
 
 #5 Data manipulation
-
+```{r}
 # Create "Age Groups"
 dat <- data_trust %>% 
   mutate(age_group = cut(agea, 
@@ -55,22 +55,31 @@ dat$gndr<- factor(data_trust$gndr,
 
 dat$rlgdnm <- factor(data_trust$rlgdnm,
                       levels = c(1, 2, 3, 4, 5, 6, 7, 8),
-                      labels = c("Roman_Catholic", "Protestant", "Eastern_Orthodox",
+                      labels = c("Roman_Catholic", "Protestant","Eastern_Orthodox",
                                  "Other_Christian denomination","Jewish", "Islam",
                                  "Eastern religions", "Other Non-Christian religions"))
+```
 
 
 #5 Inference Statistic
 #5.1
 #5.2 Run individual linear regressions for each independent variable
+```{r}
 #5.2.1 Model 1: Independent Variable: domicil
 model_1 <- lm(t_score ~ domicil, dat)
+summary(model_1)
 
 #5.2.2 Model 2: Independent Variable: gndr
 model_2 <- lm(t_score ~ gndr, dat)
+summary(model_2)
 
 #5.2.3 Model 3: Independent Variable: agea
 model_3 <- lm(t_score ~ agea, dat)
+summary(model_3)
+
+#5.2.4 Model 4: Multiple linear regression
+model_4 <- lm(t_score ~ domicil + gndr + agea + rlgdnm, dat)
+summary(model_4)
 
 #5.3 Create Tables
 #5.3.1 Table for model 1(domicil)
@@ -83,8 +92,11 @@ stargazer(model_2, type = "text")
 stargazer(model_3, type = "text")
 
 
+```
+
 #5.4 Plot models
 
+```{r}
 #5.4.1 Plot Model 1 (Domicile vs Trust Score)
 
 ggplot(dat, aes(domicil, t_score, fill = domicil))+
@@ -93,10 +105,10 @@ ggplot(dat, aes(domicil, t_score, fill = domicil))+
   labs(title = "Trust level comparison based on living location",
        x = "Domicile",
        y = "Trust Score")
+```
+COMMENT HERE
 
-
-
-
+```{r}
 #5.4.3 Plot model 2 (Gender vs Trust Score)
 
 dat2 <- dat %>% 
@@ -108,13 +120,10 @@ ggplot(dat2, aes(gndr, med_tscore, fill = gndr))+
     labs(title = "Median trust score across genders",
          x = "Gender",
          y = "Trust Score")
+```
 
-
-
-
+```{r}
 #5.4.3 Plot model 3 (Age vs Trust Score)
-
-
 ggplot(dat, aes(agea, t_score))+
   geom_jitter(color = "blue", alpha = 0.1)+
   geom_smooth(method = "lm", color = "red")+
@@ -122,11 +131,12 @@ ggplot(dat, aes(agea, t_score))+
        x = "Age",
        y = "Trust Score")+
   theme_bw()
+```
 
+COMMENT HERE
 
-
+```{r}
 #5.4.4 Plot model 4 (Religion vs Trust Score)
-
 ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
   geom_boxplot()+
   theme_bw()+
@@ -134,4 +144,5 @@ ggplot(dat, aes(rlgdnm, t_score, fill = rlgdnm))+
   labs(title = "Trust level comparison based on Religion",
        x = "Religion",
        y = "Trust Score")
-
+```
+COMMENT HERE

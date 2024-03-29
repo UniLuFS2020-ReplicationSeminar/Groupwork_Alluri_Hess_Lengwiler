@@ -9,13 +9,4 @@ The repository is structured as follows:
 5. plots: contains the plots created in the process of the class exercise
 6. scripts: contains the scripts created in the process of the class exercise
 
-##Content of the Class Exercise
-#Research Question
-
-
-#Hypotheses
-
-
-#Findings
-
 
